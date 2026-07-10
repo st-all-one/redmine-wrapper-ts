@@ -7,7 +7,7 @@
  */
 
 export const LIB_NAME = "redmine-wrapper-ts";
-export const LOG_NAMESPACE = [LIB_NAME] as const;
+export const LOG_NAMESPACE = ["@st-all-one", LIB_NAME] as const;
 
 export const DEFAULT_TIMEOUT_MS = 30_000;
 export const DEFAULT_MAX_RPS = 10;

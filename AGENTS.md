@@ -17,8 +17,8 @@ Publish: `npx jsr publish` (CI auto-publishes on push to `main`).
 - **Immutability**: Config is frozen after creation. No setters. Create a new instance for different configs.
 - **RFC 7807 errors**: `RedmineWrapperError` with `type`, `title`, `status`, `detail`, `instance` (UUIDv7), `context`
 - **Error categories**: 12 domain-specific categories (authentication-failed, validation-error, rate-limited, etc.)
-- **Logging**: `@logtape/logtape` with namespace-based subloggers
-- **Tech stack**: Deno runtime, `@std/uuid` (v7 UUID for error tracking), LogTape 2.0, native `fetch`
+- **Logging**: `@logtape/logtape` v2.2.4 with namespace-based subloggers (root: `["@st-all-one", "redmine-wrapper-ts"]`)
+- **Tech stack**: Deno runtime, `@std/uuid` (v7 UUID for error tracking), LogTape 2.2.4, native `fetch`
 - **Pagination**: `PaginationIterator<T>` (AsyncGenerator, auto-fetch pages)
 
 ## Entry points

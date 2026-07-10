@@ -89,16 +89,14 @@ export class RedmineWrapperError extends Error {
         this.status = statusMap[category];
         this.name = "RedmineWrapperError";
 
-        if (logger.isEnabledFor("error")) {
-            logger.error("RedmineWrapper Exception Triggered", {
-                error_type: this.type,
-                instance: this.instance,
-                status: this.status,
-                detail: this.detail,
-                cause: options?.cause,
-                context: this.context,
-            });
-        }
+        logger.error("RedmineWrapperError triggered", {
+            errorType: this.type,
+            instance: this.instance,
+            status: this.status,
+            detail: this.detail,
+            cause: options?.cause,
+            context: this.context,
+        });
     }
 
     /**
