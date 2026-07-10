@@ -1,0 +1,44 @@
+# RedmineWrapperTS
+
+> RedmineWrapperTS is a strongly typed wrapper for the Redmine REST API, built for Deno 2.0 with a focus on immutability, traceability, and ease of use. It provides 22 resource classes covering the entire Redmine API surface, automatic pagination via AsyncGenerator, rate limiting (default 10 req/s), configurable timeouts (default 30s), and RFC 7807 error responses with UUIDv7 correlation IDs.
+
+Things to remember when using RedmineWrapperTS:
+
+- This is a **Deno 2.0** library published to JSR as `@st-all-one/redmine-wrapper-ts` — it uses native `fetch`, not Node.js `http`/`axios`
+- **Factory-based isolation**: `RedmineWrapperTS.create({ baseUrl, apiKey })` — no global state or singletons; each instance is fully independent
+- **Immutable config**: Config is frozen after `create()`. No setters. Create a new instance for different credentials or settings
+- **All errors are `RedmineWrapperError`** following **RFC 7807 (Problem Details)** with `type`, `title`, `status`, `detail`, `instance` (UUIDv7), and `context`. There are **12 error categories** (authentication-failed, validation-error, rate-limited, timeout, etc.)
+- **Pagination is automatic** — `list()` returns a `PaginationIterator<T>` (AsyncGenerator) that fetches pages on demand. Use `for await` to iterate or `.toArray()` to collect all items
+- **File uploads are 2-step**: call `sdk.attachments.upload(filename, bytes)` to get a token, then include the token in `uploads` array when creating/updating an issue
+- **Wiki updates require version** — always read the current version first and pass it back to prevent conflict (otherwise you get a 409)
+- **Impersonation** via `switchUser` config requires a Redmine admin account (available since Redmine 2.2.0)
+- **Rate limiting** is client-side by default; server-side 429 responses are also caught and raised as `rate-limited` errors
+- **`deno task fmt`** (4-space indent, sameLine braces, lineWidth 120), **`deno task lint`** (strict rules including explicit-function-return-type, verbatim-module-syntax), **`deno task test`**, **`deno task check`** — see `AGENTS.md` for full details
+
+## Docs
+
+- [Getting Started](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/getting-started.md): Installation, configuration, basic usage, error handling, pagination
+- [Usage Guide](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/usage-guide.md): Complete examples for all 22 resources — Issues, Projects, Users, Time Entries, Wiki, Attachments, Relations, Versions, Memberships, Groups, and more
+- [API Reference](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/api-reference.md): Full method listing for every resource, type definitions, error categories table, and PaginationIterator API
+- [Integration Guide](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/integration-guide.md): Day-to-day usage patterns, best practices, and recommended workflows
+- [Error Catalog (RFC 7807)](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/error/errors.md): Complete reference for all 12 error categories with admonitory examples, retry logic, and structured logging guidance
+- [Particularities](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/particularities.md): Redmine API quirks, limitations, and important observations
+
+## API
+
+- [API Reference](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/api-reference.md): Complete listing of all 22 resource classes, their methods, configuration options, and type definitions
+- [Types (source)](https://github.com/st-all-one/redmine-wrapper-ts/tree/main/src/types): TypeScript type definitions for all API responses — Issue, Project, User, TimeEntry, Journal, Relation, WikiPage, Version, Attachment, and 15 more
+- [Resources (source)](https://github.com/st-all-one/redmine-wrapper-ts/tree/main/src/resources): Source code for all 22 resource classes, each extending `BaseResource` with CRUD operations
+
+## Examples
+
+- [Comprehensive usage](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/usage-guide.md): Dozens of real-world examples covering every resource — listing with filters, creating issues with custom fields and uploads, updating with transitions, wiki versioning, memberships management, and more
+- [Error handling with retry](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/error/errors.md): Complete example of RFC 7807 error handling with exponential backoff for transient errors (429, 504) and structured logging with the UUIDv7 correlation ID
+
+## Optional
+
+- [Agent Guide (AGENTS.md)](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/AGENTS.md): Development conventions, architecture overview, entry points, code style, and constraints for AI agents
+- [README](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/README.md): Full project overview in Portuguese with feature table, installation instructions for multiple package managers, and test results
+- [Wiki Index](https://github.com/st-all-one/redmine-wrapper-ts/blob/main/wiki/index.md): Central documentation hub with quick reference example and links to all sections
+- [Error category details](https://github.com/st-all-one/redmine-wrapper-ts/tree/main/wiki/error): Individual pages for each of the 12 error categories (authentication-failed, authorization-denied, resource-not-found, validation-error, conflict, impersonation-failed, upload-too-large, rate-limited, timeout, network-error, parse-error, internal-error)
+- [Redmine REST API documentation](https://www.redmine.org/projects/redmine/wiki/Rest_api): Official Redmine REST API reference
